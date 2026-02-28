@@ -1,0 +1,47 @@
+{
+  "contentType": "application/vnd.gorules.decision",
+  "nodes": [
+    {
+      "id": "dim-input",
+      "name": "Input",
+      "type": "inputNode",
+      "position": {
+        "x": 100,
+        "y": 200
+      }
+    },
+    {
+      "id": "dim-fn",
+      "name": "Dimension Validation",
+      "type": "functionNode",
+      "position": {
+        "x": 400,
+        "y": 200
+      },
+      "content": {
+        "source": "/**\n * @type {Handler}\n */\nexport const handler = async (input) => {\nconst { width, height, material, specs } = input;\nconst errors = [];\nconst warnings = [];\nconst dimSpec = specs?.dimensions?.[material];\nif (!dimSpec) { errors.push({ parameter: 'material', rule: 'dimension-validation', message: `Geen maatspecificaties voor materiaal ${material}` }); }\nelse {\n  if (width < dimSpec.minWidth) errors.push({ parameter: 'width', rule: 'min-width', message: `Minimale breedte is ${dimSpec.minWidth}mm` });\n  if (width > dimSpec.maxWidth) errors.push({ parameter: 'width', rule: 'max-width', message: `Maximale breedte is ${dimSpec.maxWidth}mm` });\n  if (height < dimSpec.minHeight) errors.push({ parameter: 'height', rule: 'min-height', message: `Minimale hoogte is ${dimSpec.minHeight}mm` });\n  if (height > dimSpec.maxHeight) errors.push({ parameter: 'height', rule: 'max-height', message: `Maximale hoogte is ${dimSpec.maxHeight}mm` });\n  const area = (width * height) / 1000000;\n  if (dimSpec.maxArea && area > dimSpec.maxArea) errors.push({ parameter: 'dimensions', rule: 'max-area', message: `Maximale oppervlakte is ${dimSpec.maxArea}m² (huidig: ${area.toFixed(2)}m²)` });\n}\nreturn { errors, warnings, area: (width * height) / 1000000 };\n};"
+      }
+    },
+    {
+      "id": "dim-output",
+      "name": "Output",
+      "type": "outputNode",
+      "position": {
+        "x": 700,
+        "y": 200
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "dim-edge-1",
+      "sourceId": "dim-input",
+      "targetId": "dim-fn"
+    },
+    {
+      "id": "dim-edge-2",
+      "sourceId": "dim-fn",
+      "targetId": "dim-output"
+    }
+  ]
+}

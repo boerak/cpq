@@ -1,0 +1,47 @@
+{
+  "contentType": "application/vnd.gorules.decision",
+  "nodes": [
+    {
+      "id": "ca-input",
+      "name": "Input",
+      "type": "inputNode",
+      "position": {
+        "x": 100,
+        "y": 200
+      }
+    },
+    {
+      "id": "ca-fn",
+      "name": "Color Availability",
+      "type": "functionNode",
+      "position": {
+        "x": 400,
+        "y": 200
+      },
+      "content": {
+        "source": "/**\n * @type {Handler}\n */\nexport const handler = async (input) => {\nconst { material, specs } = input;\nconst available = specs?.materialColors?.[material] || [];\nreturn { availableColors: available };\n};"
+      }
+    },
+    {
+      "id": "ca-output",
+      "name": "Output",
+      "type": "outputNode",
+      "position": {
+        "x": 700,
+        "y": 200
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "ca-edge-1",
+      "sourceId": "ca-input",
+      "targetId": "ca-fn"
+    },
+    {
+      "id": "ca-edge-2",
+      "sourceId": "ca-fn",
+      "targetId": "ca-output"
+    }
+  ]
+}

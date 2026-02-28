@@ -1,0 +1,47 @@
+{
+  "contentType": "application/vnd.gorules.decision",
+  "nodes": [
+    {
+      "id": "bom-input",
+      "name": "Input",
+      "type": "inputNode",
+      "position": {
+        "x": 100,
+        "y": 300
+      }
+    },
+    {
+      "id": "bom-fn",
+      "name": "Bill of Materials",
+      "type": "functionNode",
+      "position": {
+        "x": 400,
+        "y": 300
+      },
+      "content": {
+        "source": "/**\n * @type {Handler}\n */\nexport const handler = async (input) => {\nconst { userSelections: sel, specs, productType } = input;\nconst lines = [];\nlet sortOrder = 0;\n\n// Slat lines\nif (sel.profile && sel.width && sel.height) {\n  const profileSpec = specs?.profiles?.find(p => p.code === sel.profile);\n  if (profileSpec) {\n    const numSlats = Math.ceil(sel.height / profileSpec.heightMm);\n    const cutLength = sel.width - 10;\n    lines.push({ partSku: `SLAT-${sel.profile}`, category: 'slat', quantity: numSlats, unit: 'pcs', cutLengthMm: cutLength, sortOrder: ++sortOrder, notes: `Profiel ${sel.profile}, ${numSlats} lamellen` });\n  }\n}\n\n// Box\nif (sel.boxType) {\n  lines.push({ partSku: sel.boxType, category: 'box', quantity: 1, unit: 'pcs', cutLengthMm: sel.width + 40, sortOrder: ++sortOrder, notes: `Kast ${sel.boxType}` });\n  const endcapSku = sel.boxType.includes('BI') ? 'ENDCAP-BI' : 'ENDCAP-SM';\n  lines.push({ partSku: endcapSku, category: 'box', quantity: 2, unit: 'pcs', sortOrder: ++sortOrder, notes: 'Eindkappen' });\n}\n\n// Axle\nlines.push({ partSku: 'AXLE-60', category: 'box', quantity: 1, unit: 'pcs', cutLengthMm: sel.width - 20, sortOrder: ++sortOrder, notes: 'As 60mm' });\n\n// Guide rails\nif (sel.guideType && sel.height) {\n  const railSku = `${sel.guideType}-RAIL`;\n  lines.push({ partSku: railSku, category: 'guide', quantity: 2, unit: 'pcs', cutLengthMm: sel.height, sortOrder: ++sortOrder, notes: `Geleiders ${sel.guideType}` });\n  const rail = specs?.guideRails?.find(r => r.code === sel.guideType);\n  const bracketSpacing = rail?.bracketSpacingMm || 600;\n  const bracketsPerSide = Math.ceil(sel.height / bracketSpacing) + 1;\n  const bracketSku = sel.guideType.includes('WIND') || sel.guideType.includes('ZIP') ? 'BRACKET-WIND' : 'BRACKET-STD';\n  lines.push({ partSku: bracketSku, category: 'hardware', quantity: bracketsPerSide * 2, unit: 'pcs', sortOrder: ++sortOrder, notes: `Beugels (${bracketsPerSide} per zijde)` });\n}\n\n// Motor or manual drive\nif (sel.driveType === 'motor') {\n  const motorCode = sel.motorCode || specs?.motors?.find(m => sel.motorBrand ? m.brand.toLowerCase() === sel.motorBrand.toLowerCase() : true)?.code;\n  if (motorCode) {\n    lines.push({ partSku: `MOTOR-${motorCode}`, category: 'motor', quantity: 1, unit: 'pcs', sortOrder: ++sortOrder, notes: `Motor ${motorCode}` });\n  }\n} else if (sel.driveType === 'manual_strap') {\n  lines.push({ partSku: 'STRAP-14', category: 'drive', quantity: 1, unit: 'set', sortOrder: ++sortOrder, notes: 'Bandoproller set' });\n} else if (sel.driveType === 'manual_crank') {\n  lines.push({ partSku: 'CRANK-STD', category: 'drive', quantity: 1, unit: 'pcs', sortOrder: ++sortOrder, notes: 'Lierhandwiel' });\n}\n\n// Fasteners\nconst screwCount = lines.filter(l => l.partSku?.includes('BRACKET')).reduce((sum, l) => sum + l.quantity * 2, 0);\nif (screwCount > 0) {\n  lines.push({ partSku: 'SCREW-6X60', category: 'hardware', quantity: screwCount, unit: 'pcs', sortOrder: ++sortOrder, notes: 'Bevestigingsschroeven' });\n  lines.push({ partSku: 'PLUG-8MM', category: 'hardware', quantity: screwCount, unit: 'pcs', sortOrder: ++sortOrder, notes: 'Muurpluggen' });\n}\n\nreturn { lines, totalParts: lines.length };\n};"
+      }
+    },
+    {
+      "id": "bom-output",
+      "name": "Output",
+      "type": "outputNode",
+      "position": {
+        "x": 700,
+        "y": 300
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "bom-edge-1",
+      "sourceId": "bom-input",
+      "targetId": "bom-fn"
+    },
+    {
+      "id": "bom-edge-2",
+      "sourceId": "bom-fn",
+      "targetId": "bom-output"
+    }
+  ]
+}

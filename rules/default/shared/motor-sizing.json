@@ -1,0 +1,47 @@
+{
+  "contentType": "application/vnd.gorules.decision",
+  "nodes": [
+    {
+      "id": "ms-input",
+      "name": "Input",
+      "type": "inputNode",
+      "position": {
+        "x": 100,
+        "y": 200
+      }
+    },
+    {
+      "id": "ms-fn",
+      "name": "Motor Sizing",
+      "type": "functionNode",
+      "position": {
+        "x": 400,
+        "y": 200
+      },
+      "content": {
+        "source": "/**\n * @type {Handler}\n */\nexport const handler = async (input) => {\nconst { totalWeight, area, driveType, motorBrand, specs } = input;\nif (driveType !== 'motor') return { compatibleMotors: [], recommendedMotor: null, warnings: [] };\nconst safetyFactor = specs?.motor?.minTorque?.safetyFactor || 1.3;\nconst requiredTorque = totalWeight * 0.05 * safetyFactor;\nconst motors = specs?.motors || [];\nconst compatible = motors.filter(m => {\n  if (m.torqueNm < requiredTorque) return false;\n  if (m.maxWeightKg && totalWeight > m.maxWeightKg) return false;\n  if (m.maxSurfaceM2 && area > m.maxSurfaceM2) return false;\n  if (motorBrand && m.brand.toLowerCase() !== motorBrand.toLowerCase()) return false;\n  return true;\n});\ncompatible.sort((a, b) => a.torqueNm - b.torqueNm);\nconst warnings = [];\nif (compatible.length === 0) warnings.push({ parameter: 'motor', rule: 'no-compatible-motor', message: 'Geen compatibele motor gevonden voor deze configuratie' });\nreturn { compatibleMotors: compatible.map(m => m.code), recommendedMotor: compatible[0]?.code || null, requiredTorque: Math.round(requiredTorque * 100) / 100, warnings };\n};"
+      }
+    },
+    {
+      "id": "ms-output",
+      "name": "Output",
+      "type": "outputNode",
+      "position": {
+        "x": 700,
+        "y": 200
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "ms-edge-1",
+      "sourceId": "ms-input",
+      "targetId": "ms-fn"
+    },
+    {
+      "id": "ms-edge-2",
+      "sourceId": "ms-fn",
+      "targetId": "ms-output"
+    }
+  ]
+}

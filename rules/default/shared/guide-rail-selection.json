@@ -1,0 +1,47 @@
+{
+  "contentType": "application/vnd.gorules.decision",
+  "nodes": [
+    {
+      "id": "gr-input",
+      "name": "Input",
+      "type": "inputNode",
+      "position": {
+        "x": 100,
+        "y": 200
+      }
+    },
+    {
+      "id": "gr-fn",
+      "name": "Guide Rail Selection",
+      "type": "functionNode",
+      "position": {
+        "x": 400,
+        "y": 200
+      },
+      "content": {
+        "source": "/**\n * @type {Handler}\n */\nexport const handler = async (input) => {\nconst { guideType, height, profile, specs } = input;\nconst rails = specs?.guideRails || [];\nconst errors = [];\nconst warnings = [];\nconst rail = rails.find(r => r.code === guideType);\nif (!rail) { errors.push({ parameter: 'guideType', rule: 'invalid-guide', message: 'Ongeldige geleider' }); return { errors, warnings }; }\nif (height > rail.maxHeightMm) errors.push({ parameter: 'guideType', rule: 'max-height', message: `Maximale hoogte voor deze geleider is ${rail.maxHeightMm}mm` });\nif (rail.compatibleProfiles && !rail.compatibleProfiles.includes(profile)) errors.push({ parameter: 'guideType', rule: 'incompatible-profile', message: `Geleider niet compatibel met profiel ${profile}` });\nreturn { errors, warnings, guideWeight: (height / 1000) * rail.weightPerMeterKg * 2 };\n};"
+      }
+    },
+    {
+      "id": "gr-output",
+      "name": "Output",
+      "type": "outputNode",
+      "position": {
+        "x": 700,
+        "y": 200
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "gr-edge-1",
+      "sourceId": "gr-input",
+      "targetId": "gr-fn"
+    },
+    {
+      "id": "gr-edge-2",
+      "sourceId": "gr-fn",
+      "targetId": "gr-output"
+    }
+  ]
+}

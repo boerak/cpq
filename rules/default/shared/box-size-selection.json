@@ -1,0 +1,47 @@
+{
+  "contentType": "application/vnd.gorules.decision",
+  "nodes": [
+    {
+      "id": "bs-input",
+      "name": "Input",
+      "type": "inputNode",
+      "position": {
+        "x": 100,
+        "y": 200
+      }
+    },
+    {
+      "id": "bs-fn",
+      "name": "Box Size Selection",
+      "type": "functionNode",
+      "position": {
+        "x": 400,
+        "y": 200
+      },
+      "content": {
+        "source": "/**\n * @type {Handler}\n */\nexport const handler = async (input) => {\nconst { material, width, rollDiameter, specs } = input;\nconst boxes = specs?.boxes || [];\nconst compatible = boxes.filter(b => {\n  if (b.innerDiameterMm < (rollDiameter || 0)) return false;\n  if (!b.compatibleMaterials.includes(material)) return false;\n  if (b.maxWidthMm && width > b.maxWidthMm) return false;\n  return true;\n});\nreturn { compatibleBoxes: compatible.map(b => b.code), recommendedBox: compatible[0]?.code || null };\n};"
+      }
+    },
+    {
+      "id": "bs-output",
+      "name": "Output",
+      "type": "outputNode",
+      "position": {
+        "x": 700,
+        "y": 200
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "bs-edge-1",
+      "sourceId": "bs-input",
+      "targetId": "bs-fn"
+    },
+    {
+      "id": "bs-edge-2",
+      "sourceId": "bs-fn",
+      "targetId": "bs-output"
+    }
+  ]
+}

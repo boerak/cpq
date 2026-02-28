@@ -1,0 +1,47 @@
+{
+  "contentType": "application/vnd.gorules.decision",
+  "nodes": [
+    {
+      "id": "rso-input",
+      "name": "Input",
+      "type": "inputNode",
+      "position": {
+        "x": 100,
+        "y": 300
+      }
+    },
+    {
+      "id": "rso-fn",
+      "name": "Roller Shutter Options",
+      "type": "functionNode",
+      "position": {
+        "x": 400,
+        "y": 300
+      },
+      "content": {
+        "source": "/**\n * @type {Handler}\n */\nexport const handler = async (input) => {\nconst { userSelections: sel, specs, productType } = input;\nconst availableOptions = {};\nconst resetFields = [];\n\n// Material options based on dimensions\nif (specs?.dimensions) {\n  const materialOpts = [];\n  for (const [mat, dimSpec] of Object.entries(specs.dimensions)) {\n    const available = !sel.width || !sel.height || (sel.width >= dimSpec.minWidth && sel.width <= dimSpec.maxWidth && sel.height >= dimSpec.minHeight && sel.height <= dimSpec.maxHeight);\n    let reason = null;\n    if (!available) {\n      if (sel.width > dimSpec.maxWidth) reason = `Maximale breedte ${dimSpec.maxWidth}mm`;\n      else if (sel.height > dimSpec.maxHeight) reason = `Maximale hoogte ${dimSpec.maxHeight}mm`;\n      else reason = 'Afmetingen buiten bereik';\n    }\n    materialOpts.push({ code: mat, available, reason });\n  }\n  availableOptions.material = materialOpts;\n  // Reset material if no longer available\n  if (sel.material && materialOpts.find(m => m.code === sel.material && !m.available)) {\n    resetFields.push('material', 'profile', 'color', 'boxType');\n  }\n}\n\n// Profile options based on material\nif (sel.material && specs?.profiles) {\n  const profiles = specs.profiles.filter(p => p.materialCode === sel.material);\n  availableOptions.profile = profiles.map(p => {\n    const available = !sel.width || (sel.width >= p.minWidthMm && sel.width <= p.maxWidthMm);\n    return { code: p.code, available, reason: available ? null : `Breedte buiten bereik (${p.minWidthMm}-${p.maxWidthMm}mm)` };\n  });\n  if (sel.profile && !profiles.find(p => p.code === sel.profile)) {\n    resetFields.push('profile');\n  }\n}\n\n// Color options based on material\nif (sel.material && specs?.materialColors) {\n  const colors = specs.materialColors[sel.material] || [];\n  availableOptions.color = colors.map(c => ({ code: c, available: true, reason: null }));\n  if (sel.color && !colors.includes(sel.color)) {\n    resetFields.push('color');\n  }\n}\n\n// Box options based on material and width\nif (specs?.boxes) {\n  availableOptions.boxType = specs.boxes.map(b => {\n    let available = true;\n    let reason = null;\n    if (sel.material && !b.compatibleMaterials.includes(sel.material)) { available = false; reason = `Niet compatibel met ${sel.material}`; }\n    if (sel.width && b.maxWidthMm && sel.width > b.maxWidthMm) { available = false; reason = `Maximale breedte ${b.maxWidthMm}mm`; }\n    return { code: b.code, available, reason };\n  });\n  if (sel.boxType) {\n    const boxOpt = availableOptions.boxType.find(b => b.code === sel.boxType);\n    if (boxOpt && !boxOpt.available) resetFields.push('boxType');\n  }\n}\n\n// Motor options based on weight/area\nif (sel.driveType === 'motor' && sel.width && sel.height && sel.profile && specs?.motors && specs?.weight) {\n  const weightSpec = specs.weight[sel.profile];\n  if (weightSpec) {\n    const area = (sel.width * sel.height) / 1000000;\n    const totalWeight = area * weightSpec.weightPerM2;\n    const safetyFactor = specs?.motor?.minTorque?.safetyFactor || 1.3;\n    const reqTorque = totalWeight * 0.05 * safetyFactor;\n    availableOptions.motor = specs.motors.map(m => {\n      let available = true;\n      let reason = null;\n      if (m.torqueNm < reqTorque) { available = false; reason = `Onvoldoende koppel (${m.torqueNm}Nm < ${reqTorque.toFixed(1)}Nm benodigd)`; }\n      if (m.maxWeightKg && totalWeight > m.maxWeightKg) { available = false; reason = `Gewicht te hoog (${totalWeight.toFixed(1)}kg > ${m.maxWeightKg}kg max)`; }\n      if (m.maxSurfaceM2 && area > m.maxSurfaceM2) { available = false; reason = `Oppervlakte te groot (${area.toFixed(2)}m² > ${m.maxSurfaceM2}m² max)`; }\n      if (sel.motorBrand && m.brand.toLowerCase() !== sel.motorBrand.toLowerCase()) { available = false; reason = `Ander merk`; }\n      return { code: m.code, available, reason };\n    });\n  }\n}\n\n// Guide rail options\nif (specs?.guideRails) {\n  availableOptions.guideType = specs.guideRails.map(r => {\n    let available = true;\n    let reason = null;\n    if (sel.height && sel.height > r.maxHeightMm) { available = false; reason = `Maximale hoogte ${r.maxHeightMm}mm`; }\n    if (sel.profile && r.compatibleProfiles && !r.compatibleProfiles.includes(sel.profile)) { available = false; reason = `Niet compatibel met profiel ${sel.profile}`; }\n    return { code: r.code, available, reason };\n  });\n  if (sel.guideType) {\n    const guideOpt = availableOptions.guideType.find(g => g.code === sel.guideType);\n    if (guideOpt && !guideOpt.available) resetFields.push('guideType');\n  }\n}\n\n// Accessory options\nif (specs?.accessories) {\n  availableOptions.accessories = specs.accessories.map(a => {\n    let available = true;\n    let reason = null;\n    if (a.requiresMotor && sel.driveType !== 'motor') { available = false; reason = 'Vereist motoraandrijving'; }\n    return { code: a.code, available, reason };\n  });\n}\n\n// Drive type options\navailableOptions.driveType = [\n  { code: 'manual_strap', available: productType?.variant !== 'insulated', reason: productType?.variant === 'insulated' ? 'Niet beschikbaar voor geïsoleerd' : null },\n  { code: 'manual_crank', available: productType?.variant !== 'insulated', reason: productType?.variant === 'insulated' ? 'Niet beschikbaar voor geïsoleerd' : null },\n  { code: 'motor', available: true, reason: null }\n];\n\nreturn { availableOptions, resetFields };\n};"
+      }
+    },
+    {
+      "id": "rso-output",
+      "name": "Output",
+      "type": "outputNode",
+      "position": {
+        "x": 700,
+        "y": 300
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "rso-edge-1",
+      "sourceId": "rso-input",
+      "targetId": "rso-fn"
+    },
+    {
+      "id": "rso-edge-2",
+      "sourceId": "rso-fn",
+      "targetId": "rso-output"
+    }
+  ]
+}

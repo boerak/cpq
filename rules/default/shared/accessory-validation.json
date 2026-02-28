@@ -1,0 +1,47 @@
+{
+  "contentType": "application/vnd.gorules.decision",
+  "nodes": [
+    {
+      "id": "av-input",
+      "name": "Input",
+      "type": "inputNode",
+      "position": {
+        "x": 100,
+        "y": 200
+      }
+    },
+    {
+      "id": "av-fn",
+      "name": "Accessory Validation",
+      "type": "functionNode",
+      "position": {
+        "x": 400,
+        "y": 200
+      },
+      "content": {
+        "source": "/**\n * @type {Handler}\n */\nexport const handler = async (input) => {\nconst { accessories: selected, driveType, specs } = input;\nif (!selected || selected.length === 0) return { errors: [], warnings: [] };\nconst allAccessories = specs?.accessories || [];\nconst errors = [];\nconst warnings = [];\nfor (const code of selected) {\n  const acc = allAccessories.find(a => a.code === code);\n  if (!acc) { errors.push({ parameter: 'accessories', rule: 'invalid-accessory', message: `Onbekend toebehoren: ${code}` }); continue; }\n  if (acc.requiresMotor && driveType !== 'motor') errors.push({ parameter: 'accessories', rule: 'requires-motor', message: `${acc.name} vereist motoraandrijving` });\n  if (acc.incompatibleWith) {\n    for (const incompat of acc.incompatibleWith) {\n      if (selected.includes(incompat)) errors.push({ parameter: 'accessories', rule: 'incompatible', message: `${acc.name} is niet compatibel met ${incompat}` });\n    }\n  }\n  if (acc.prerequisiteAccessories) {\n    for (const prereq of acc.prerequisiteAccessories) {\n      if (!selected.includes(prereq)) warnings.push({ parameter: 'accessories', rule: 'prerequisite', message: `${acc.name} werkt het beste met ${prereq}` });\n    }\n  }\n}\nreturn { errors, warnings };\n};"
+      }
+    },
+    {
+      "id": "av-output",
+      "name": "Output",
+      "type": "outputNode",
+      "position": {
+        "x": 700,
+        "y": 200
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "av-edge-1",
+      "sourceId": "av-input",
+      "targetId": "av-fn"
+    },
+    {
+      "id": "av-edge-2",
+      "sourceId": "av-fn",
+      "targetId": "av-output"
+    }
+  ]
+}

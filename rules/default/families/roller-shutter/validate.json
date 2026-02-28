@@ -1,0 +1,47 @@
+{
+  "contentType": "application/vnd.gorules.decision",
+  "nodes": [
+    {
+      "id": "rsv-input",
+      "name": "Input",
+      "type": "inputNode",
+      "position": {
+        "x": 100,
+        "y": 300
+      }
+    },
+    {
+      "id": "rsv-fn",
+      "name": "Roller Shutter Validation",
+      "type": "functionNode",
+      "position": {
+        "x": 400,
+        "y": 300
+      },
+      "content": {
+        "source": "/**\n * @type {Handler}\n */\nexport const handler = async (input) => {\nconst { userSelections: sel, specs, productType } = input;\nconst errors = [];\nconst warnings = [];\n\n// Dimension validation\nif (sel.width && sel.height && sel.material) {\n  const dimSpec = specs?.dimensions?.[sel.material];\n  if (dimSpec) {\n    if (sel.width < dimSpec.minWidth) errors.push({ parameter: 'width', rule: 'min-width', message: `Minimale breedte is ${dimSpec.minWidth}mm` });\n    if (sel.width > dimSpec.maxWidth) errors.push({ parameter: 'width', rule: 'max-width', message: `Maximale breedte is ${dimSpec.maxWidth}mm` });\n    if (sel.height < dimSpec.minHeight) errors.push({ parameter: 'height', rule: 'min-height', message: `Minimale hoogte is ${dimSpec.minHeight}mm` });\n    if (sel.height > dimSpec.maxHeight) errors.push({ parameter: 'height', rule: 'max-height', message: `Maximale hoogte is ${dimSpec.maxHeight}mm` });\n    const area = (sel.width * sel.height) / 1000000;\n    if (dimSpec.maxArea && area > dimSpec.maxArea) errors.push({ parameter: 'dimensions', rule: 'max-area', message: `Maximale oppervlakte is ${dimSpec.maxArea}m² (huidig: ${area.toFixed(2)}m²)` });\n  }\n}\n\n// Weight & motor validation\nif (sel.width && sel.height && sel.profile) {\n  const weightSpec = specs?.weight?.[sel.profile];\n  if (weightSpec) {\n    const area = (sel.width * sel.height) / 1000000;\n    const totalWeight = area * weightSpec.weightPerM2;\n    if (sel.driveType === 'manual_strap' && weightSpec.maxWeightManual && totalWeight > weightSpec.maxWeightManual) {\n      warnings.push({ parameter: 'driveType', rule: 'weight-warning', message: `Gewicht (${totalWeight.toFixed(1)}kg) is hoog voor bandoproller. Overweeg motoraandrijving.` });\n    }\n    if (sel.driveType === 'manual_crank' && weightSpec.maxWeightManual && totalWeight > weightSpec.maxWeightManual * 1.5) {\n      errors.push({ parameter: 'driveType', rule: 'weight-limit', message: `Gewicht (${totalWeight.toFixed(1)}kg) overschrijdt limiet voor handmatige bediening` });\n    }\n  }\n}\n\n// Color validation\nif (sel.color && sel.material) {\n  const materialColors = specs?.materialColors?.[sel.material] || [];\n  if (materialColors.length > 0 && !materialColors.includes(sel.color)) {\n    errors.push({ parameter: 'color', rule: 'color-unavailable', message: `Kleur ${sel.color} is niet beschikbaar voor materiaal ${sel.material}` });\n  }\n}\n\n// Box validation\nif (sel.boxType && sel.material) {\n  const box = specs?.boxes?.find(b => b.code === sel.boxType);\n  if (box && !box.compatibleMaterials.includes(sel.material)) {\n    errors.push({ parameter: 'boxType', rule: 'box-material', message: `Kasttype ${sel.boxType} is niet compatibel met ${sel.material}` });\n  }\n  if (box && sel.width && box.maxWidthMm && sel.width > box.maxWidthMm) {\n    errors.push({ parameter: 'boxType', rule: 'box-width', message: `Kasttype ${sel.boxType} ondersteunt maximaal ${box.maxWidthMm}mm breedte` });\n  }\n}\n\n// Guide rail validation\nif (sel.guideType && sel.profile) {\n  const rail = specs?.guideRails?.find(r => r.code === sel.guideType);\n  if (rail) {\n    if (sel.height && sel.height > rail.maxHeightMm) errors.push({ parameter: 'guideType', rule: 'guide-max-height', message: `Maximale hoogte voor ${sel.guideType} is ${rail.maxHeightMm}mm` });\n    if (rail.compatibleProfiles && !rail.compatibleProfiles.includes(sel.profile)) errors.push({ parameter: 'guideType', rule: 'guide-profile', message: `Geleider niet compatibel met profiel ${sel.profile}` });\n  }\n}\n\n// Insulated variant checks\nif (productType?.variant === 'insulated') {\n  if (sel.material && sel.material !== 'ALU_INSULATED') {\n    errors.push({ parameter: 'material', rule: 'insulated-material', message: 'Geïsoleerd rolluik vereist ALU_INSULATED materiaal' });\n  }\n  if (sel.driveType && sel.driveType !== 'motor') {\n    errors.push({ parameter: 'driveType', rule: 'insulated-motor', message: 'Geïsoleerd rolluik vereist motoraandrijving' });\n  }\n}\n\n// Accessory validation\nif (sel.accessories && sel.accessories.length > 0) {\n  const allAcc = specs?.accessories || [];\n  for (const code of sel.accessories) {\n    const acc = allAcc.find(a => a.code === code);\n    if (!acc) continue;\n    if (acc.requiresMotor && sel.driveType !== 'motor') {\n      errors.push({ parameter: 'accessories', rule: 'requires-motor', message: `${acc.name} vereist motoraandrijving` });\n    }\n  }\n}\n\nconst valid = errors.length === 0;\nreturn { valid, errors, warnings };\n};"
+      }
+    },
+    {
+      "id": "rsv-output",
+      "name": "Output",
+      "type": "outputNode",
+      "position": {
+        "x": 700,
+        "y": 300
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "rsv-edge-1",
+      "sourceId": "rsv-input",
+      "targetId": "rsv-fn"
+    },
+    {
+      "id": "rsv-edge-2",
+      "sourceId": "rsv-fn",
+      "targetId": "rsv-output"
+    }
+  ]
+}

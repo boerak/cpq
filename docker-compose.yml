@@ -1,0 +1,62 @@
+services:
+  gorules-editor:
+    image: gorules/editor:latest
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - ./rules:/app/rules
+
+  gorules-agent:
+    image: gorules/agent:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./rules:/app/rules
+    environment:
+      - PROVIDER__TYPE=Filesystem
+      - PROVIDER__ROOT_DIR=/app/rules
+    # No healthcheck - minimal container without shell/wget/curl
+    # API uses Polly retry to handle startup race
+
+  postgres:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=cpq
+      - POSTGRES_USER=cpq
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cpq -d cpq"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: src/Cpq.Api/Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_URLS=http://+:5000
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=cpq;Username=cpq;Password=${POSTGRES_PASSWORD}
+      - RulesEngine__BaseUrl=http://gorules-agent:8080
+      - RulesEngine__ProjectSlug=default
+    depends_on:
+      postgres:
+        condition: service_healthy
+      gorules-agent:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  pg-data:
