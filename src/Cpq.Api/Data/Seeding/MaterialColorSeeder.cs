@@ -67,6 +67,26 @@ public static class MaterialColorSeeder
             });
         }
 
+        // SCREEN_FABRIC: all 25 fabric colors
+        var screenFabricColors = new[]
+        {
+            "SCR-WHITE", "SCR-LINEN", "SCR-SAND", "SCR-PEARL-GREY", "SCR-SILVER",
+            "SCR-ALU-GREY", "SCR-CHARCOAL", "SCR-BLACK", "SCR-BRONZE", "SCR-BROWN",
+            "SCR-DARK-GREY", "SCR-CREAM", "SCR-BEIGE", "SCR-LIGHT-GREY", "SCR-TAUPE",
+            "SCR-STEEL", "SCR-MOSS", "SCR-NAVY", "SCR-COFFEE", "SCR-TERRACOTTA",
+            "SCR-OFF-WHITE", "SCR-GRAPHITE", "SCR-IVORY", "SCR-STONE", "SCR-MIDNIGHT"
+        };
+
+        foreach (var colorCode in screenFabricColors)
+        {
+            materialColors.Add(new MaterialColor
+            {
+                MaterialCode = "SCREEN_FABRIC",
+                ColorCode = colorCode,
+                IsActive = true
+            });
+        }
+
         await dbSet.AddRangeAsync(materialColors);
         await context.SaveChangesAsync();
     }

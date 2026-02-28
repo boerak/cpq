@@ -71,6 +71,78 @@ public static class BoxSeeder
                 IsActive = true,
                 CreatedAt = now,
                 UpdatedAt = now
+            },
+
+            // ── Screen housings ──────────────────────────────────────────
+            new Box
+            {
+                Id = new Guid("50000000-0000-0000-0000-000000000005"),
+                Code = "SCR-HSNG-SQ-100",
+                Name = "Screenkasten vierkant 100mm",
+                Type = "screen_square",
+                InnerDiameterMm = 100,
+                OuterHeightMm = 110,
+                CompatibleMaterials = new List<string> { "SCREEN_FABRIC" },
+                MaxWidthMm = 3000,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Box
+            {
+                Id = new Guid("50000000-0000-0000-0000-000000000006"),
+                Code = "SCR-HSNG-RD-100",
+                Name = "Screenkasten rond 100mm",
+                Type = "screen_round",
+                InnerDiameterMm = 100,
+                OuterHeightMm = 105,
+                CompatibleMaterials = new List<string> { "SCREEN_FABRIC" },
+                MaxWidthMm = 3000,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Box
+            {
+                Id = new Guid("50000000-0000-0000-0000-000000000007"),
+                Code = "SCR-HSNG-SQ-120",
+                Name = "Screenkasten vierkant 120mm",
+                Type = "screen_square",
+                InnerDiameterMm = 120,
+                OuterHeightMm = 130,
+                CompatibleMaterials = new List<string> { "SCREEN_FABRIC" },
+                MaxWidthMm = 5500,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Box
+            {
+                Id = new Guid("50000000-0000-0000-0000-000000000008"),
+                Code = "SCR-HSNG-RD-120",
+                Name = "Screenkasten rond 120mm",
+                Type = "screen_round",
+                InnerDiameterMm = 120,
+                OuterHeightMm = 125,
+                CompatibleMaterials = new List<string> { "SCREEN_FABRIC" },
+                MaxWidthMm = 5500,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Box
+            {
+                Id = new Guid("50000000-0000-0000-0000-000000000009"),
+                Code = "SCR-HSNG-CONCEALED",
+                Name = "Screenkasten inbouw",
+                Type = "screen_concealed",
+                InnerDiameterMm = 120,
+                OuterHeightMm = 130,
+                CompatibleMaterials = new List<string> { "SCREEN_FABRIC" },
+                MaxWidthMm = 5500,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
             }
         };
 

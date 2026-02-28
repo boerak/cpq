@@ -95,6 +95,56 @@ public static class MotorSeeder
                 IsActive = true,
                 CreatedAt = now,
                 UpdatedAt = now
+            },
+
+            // ── Simu motors (for screens) ────────────────────────────────
+            new Motor
+            {
+                Id = new Guid("40000000-0000-0000-0000-000000000006"),
+                Code = "SIMU-T5-10",
+                Brand = "Simu",
+                Model = "T5 Hz 10/17",
+                TorqueNm = 10m,
+                SpeedRpm = 17m,
+                MaxWeightKg = 24m,
+                MaxSurfaceM2 = 3.0m,
+                ControlTypes = new List<string> { "wired_switch", "wired_timer" },
+                TubeDiameterMm = 60,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Motor
+            {
+                Id = new Guid("40000000-0000-0000-0000-000000000007"),
+                Code = "SIMU-T5-20",
+                Brand = "Simu",
+                Model = "T5 Hz 20/17",
+                TorqueNm = 20m,
+                SpeedRpm = 17m,
+                MaxWeightKg = 45m,
+                MaxSurfaceM2 = 6.0m,
+                ControlTypes = new List<string> { "wired_switch", "wired_timer" },
+                TubeDiameterMm = 60,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Motor
+            {
+                Id = new Guid("40000000-0000-0000-0000-000000000008"),
+                Code = "SIMU-T6-25",
+                Brand = "Simu",
+                Model = "T6 Hz 25/17",
+                TorqueNm = 25m,
+                SpeedRpm = 17m,
+                MaxWeightKg = 56m,
+                MaxSurfaceM2 = 7.5m,
+                ControlTypes = new List<string> { "wired_switch", "wired_timer" },
+                TubeDiameterMm = 60,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
             }
         };
 

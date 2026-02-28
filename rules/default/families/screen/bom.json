@@ -1,0 +1,47 @@
+{
+  "contentType": "application/vnd.gorules.decision",
+  "nodes": [
+    {
+      "id": "scr-bom-input",
+      "name": "Input",
+      "type": "inputNode",
+      "position": {
+        "x": 100,
+        "y": 300
+      }
+    },
+    {
+      "id": "scr-bom-fn",
+      "name": "Screen BOM",
+      "type": "functionNode",
+      "position": {
+        "x": 400,
+        "y": 300
+      },
+      "content": {
+        "source": "/**\n * Screen BOM — generates bill of materials for screen products\n * @type {Handler}\n */\nexport const handler = async (input) => {\n  const { userSelections: sel, specs } = input;\n  const lines = [];\n  let sortOrder = 0;\n  const width = sel.width || 0;\n  const height = sel.height || 0;\n  const area = (width * height) / 1000000;\n  const widthM = width / 1000;\n  const heightM = height / 1000;\n\n  // ── Fabric ──────────────────────────────────────────────────────────\n  if (sel.fabricType) {\n    const fabricSkuMap = {\n      soltis_86: 'SCR-FABRIC-SOLTIS86',\n      soltis_92: 'SCR-FABRIC-SOLTIS92',\n      soltis_96: 'SCR-FABRIC-SOLTIS96',\n      serge_600: 'SCR-FABRIC-SERGE600',\n      sunworker_open: 'SCR-FABRIC-SUNW-OPEN',\n      sunworker_classic: 'SCR-FABRIC-SUNW-CLASSIC',\n      copaco_300: 'SCR-FABRIC-COPACO300',\n      copaco_350: 'SCR-FABRIC-COPACO350'\n    };\n    const sku = fabricSkuMap[sel.fabricType];\n    if (sku) {\n      // Add 100mm to each side for hemming\n      const fabricArea = ((width + 200) * (height + 200)) / 1000000;\n      lines.push({\n        partSku: sku,\n        category: 'screen_fabric',\n        quantity: Math.round(fabricArea * 100) / 100,\n        unit: 'm2',\n        sortOrder: ++sortOrder,\n        notes: `Doek ${sel.fabricType} — ${sel.fabricColor || 'kleur tbd'} — ${sel.meshOpenness || '?'}% open`\n      });\n    }\n  }\n\n  // ── Housing ─────────────────────────────────────────────────────────\n  if (sel.housingType) {\n    const housingSkuMap = {\n      square_100: 'SCR-HSNG-SQ-100',\n      round_100: 'SCR-HSNG-RD-100',\n      square_120: 'SCR-HSNG-SQ-120',\n      round_120: 'SCR-HSNG-RD-120',\n      concealed: 'SCR-HSNG-CONCEALED'\n    };\n    const sku = housingSkuMap[sel.housingType];\n    if (sku) {\n      lines.push({\n        partSku: sku,\n        category: 'screen_housing',\n        quantity: 1,\n        unit: 'pcs',\n        sortOrder: ++sortOrder,\n        notes: `Kast ${sel.housingType} — ${sel.frameColor || 'kleur tbd'}`\n      });\n    }\n  }\n\n  // ── Side channels ───────────────────────────────────────────────────\n  if (sel.guidanceType && sel.guidanceType !== 'free_hanging') {\n    const guideSkuMap = {\n      zip: 'SCR-SIDECH-ZIP',\n      cable: 'SCR-SIDECH-CABLE'\n    };\n    const sku = guideSkuMap[sel.guidanceType];\n    if (sku) {\n      lines.push({\n        partSku: sku,\n        category: 'screen_guide',\n        quantity: 2,\n        unit: 'pcs',\n        cutLengthMm: height,\n        sortOrder: ++sortOrder,\n        notes: `Zijgeleider ${sel.guidanceType} — 2 stuks op hoogte gesneden`\n      });\n    }\n  }\n\n  // ── Bottom bar ──────────────────────────────────────────────────────\n  if (sel.bottomBar) {\n    const barSkuMap = {\n      flat: 'SCR-BB-FLAT',\n      round: 'SCR-BB-ROUND',\n      weighted: 'SCR-BB-WEIGHTED',\n      zip: 'SCR-BB-ZIP'\n    };\n    const sku = barSkuMap[sel.bottomBar];\n    if (sku) {\n      lines.push({\n        partSku: sku,\n        category: 'screen_bottombar',\n        quantity: 1,\n        unit: 'pcs',\n        cutLengthMm: width,\n        sortOrder: ++sortOrder,\n        notes: `Onderregel ${sel.bottomBar} — op breedte gesneden`\n      });\n    }\n  }\n\n  // ── Mounting brackets ───────────────────────────────────────────────\n  if (sel.mountType) {\n    const bracketSkuMap = {\n      face: 'SCR-BRACKET-FACE',\n      top: 'SCR-BRACKET-TOP',\n      ceiling: 'SCR-BRACKET-CEILING',\n      recess: 'SCR-BRACKET-RECESS'\n    };\n    const sku = bracketSkuMap[sel.mountType];\n    if (sku) {\n      // 2 brackets minimum, +1 per 1500mm width\n      const bracketCount = Math.max(2, Math.ceil(width / 1500) + 1);\n      lines.push({\n        partSku: sku,\n        category: 'screen_hardware',\n        quantity: bracketCount,\n        unit: 'pcs',\n        sortOrder: ++sortOrder,\n        notes: `Beugels ${sel.mountType} montage`\n      });\n    }\n  }\n\n  // ── Drive mechanism ─────────────────────────────────────────────────\n  if (sel.driveType === 'motor' && sel.motorType) {\n    const motorSkuMap = {\n      'SOMFY-IO-15': 'MOTOR-SOMFY-IO-15',\n      'SOMFY-IO-25': 'MOTOR-SOMFY-IO-25',\n      'SOMFY-IO-40': 'MOTOR-SOMFY-IO-40',\n      'SOMFY-RTS-20': 'MOTOR-SOMFY-RTS-20',\n      'BECKER-R12': 'MOTOR-BECKER-R12',\n      'SIMU-T5-10': 'MOTOR-SIMU-T5-10',\n      'SIMU-T5-20': 'MOTOR-SIMU-T5-20',\n      'SIMU-T6-25': 'MOTOR-SIMU-T6-25'\n    };\n    const sku = motorSkuMap[sel.motorType];\n    if (sku) {\n      lines.push({\n        partSku: sku,\n        category: 'motor',\n        quantity: 1,\n        unit: 'pcs',\n        sortOrder: ++sortOrder,\n        notes: `Motor ${sel.motorType}`\n      });\n    }\n  } else if (sel.driveType === 'manual_chain') {\n    lines.push({\n      partSku: 'SCR-CHAIN-DRIVE',\n      category: 'screen_drive',\n      quantity: 1,\n      unit: 'set',\n      sortOrder: ++sortOrder,\n      notes: 'Kettingbediening'\n    });\n  } else if (sel.driveType === 'spring_assist') {\n    lines.push({\n      partSku: 'SCR-SPRING-ASSIST',\n      category: 'screen_drive',\n      quantity: 1,\n      unit: 'set',\n      sortOrder: ++sortOrder,\n      notes: 'Veerassistentie'\n    });\n  }\n\n  // ── Axle (always) ───────────────────────────────────────────────────\n  lines.push({\n    partSku: 'AXLE-60',\n    category: 'hardware',\n    quantity: 1,\n    unit: 'pcs',\n    cutLengthMm: width - 20,\n    sortOrder: ++sortOrder,\n    notes: 'Askoker op maat gesneden'\n  });\n\n  // ── Fasteners ───────────────────────────────────────────────────────\n  const bracketCount = sel.mountType ? Math.max(2, Math.ceil(width / 1500) + 1) : 2;\n  const screwCount = bracketCount * 4;\n  lines.push({\n    partSku: 'SCREW-6X60',\n    category: 'hardware',\n    quantity: screwCount,\n    unit: 'pcs',\n    sortOrder: ++sortOrder,\n    notes: `${screwCount} schroeven voor ${bracketCount} beugels`\n  });\n  lines.push({\n    partSku: 'PLUG-8MM',\n    category: 'hardware',\n    quantity: screwCount,\n    unit: 'pcs',\n    sortOrder: ++sortOrder,\n    notes: `${screwCount} pluggen`\n  });\n\n  return { lines, totalParts: lines.length };\n};"
+      }
+    },
+    {
+      "id": "scr-bom-output",
+      "name": "Output",
+      "type": "outputNode",
+      "position": {
+        "x": 700,
+        "y": 300
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "scr-bom-edge-1",
+      "sourceId": "scr-bom-input",
+      "targetId": "scr-bom-fn"
+    },
+    {
+      "id": "scr-bom-edge-2",
+      "sourceId": "scr-bom-fn",
+      "targetId": "scr-bom-output"
+    }
+  ]
+}

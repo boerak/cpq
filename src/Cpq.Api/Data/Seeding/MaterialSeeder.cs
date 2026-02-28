@@ -45,6 +45,16 @@ public static class MaterialSeeder
                 IsActive = true,
                 CreatedAt = now,
                 UpdatedAt = now
+            },
+            new Material
+            {
+                Id = new Guid("10000000-0000-0000-0000-000000000004"),
+                Code = "SCREEN_FABRIC",
+                Name = "Screendoek",
+                DensityKgPerM3 = 350m,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
             }
         };
 

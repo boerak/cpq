@@ -338,6 +338,360 @@ public static class PartsCatalogSeeder
                 IsActive = true,
                 CreatedAt = now,
                 UpdatedAt = now
+            },
+
+            // ── Screen fabric parts ──────────────────────────────────────
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000026"),
+                Sku = "SCR-FABRIC-SOLTIS86",
+                Name = "Soltis 86 screendoek",
+                Category = "screen_fabric",
+                Unit = "m2",
+                IsCuttable = true,
+                WeightKg = 0.43m,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000027"),
+                Sku = "SCR-FABRIC-SOLTIS92",
+                Name = "Soltis 92 screendoek",
+                Category = "screen_fabric",
+                Unit = "m2",
+                IsCuttable = true,
+                WeightKg = 0.49m,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000028"),
+                Sku = "SCR-FABRIC-SOLTIS96",
+                Name = "Soltis 96 screendoek",
+                Category = "screen_fabric",
+                Unit = "m2",
+                IsCuttable = true,
+                WeightKg = 0.52m,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000029"),
+                Sku = "SCR-FABRIC-SERGE600",
+                Name = "Serge 600 screendoek",
+                Category = "screen_fabric",
+                Unit = "m2",
+                IsCuttable = true,
+                WeightKg = 0.39m,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000030"),
+                Sku = "SCR-FABRIC-SUNW-OPEN",
+                Name = "Sunworker Open screendoek",
+                Category = "screen_fabric",
+                Unit = "m2",
+                IsCuttable = true,
+                WeightKg = 0.36m,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000031"),
+                Sku = "SCR-FABRIC-SUNW-CLASSIC",
+                Name = "Sunworker Classic screendoek",
+                Category = "screen_fabric",
+                Unit = "m2",
+                IsCuttable = true,
+                WeightKg = 0.41m,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000032"),
+                Sku = "SCR-FABRIC-COPACO300",
+                Name = "Copaco 300 screendoek",
+                Category = "screen_fabric",
+                Unit = "m2",
+                IsCuttable = true,
+                WeightKg = 0.30m,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000033"),
+                Sku = "SCR-FABRIC-COPACO350",
+                Name = "Copaco 350 screendoek",
+                Category = "screen_fabric",
+                Unit = "m2",
+                IsCuttable = true,
+                WeightKg = 0.35m,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+
+            // ── Screen housings ──────────────────────────────────────────
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000034"),
+                Sku = "SCR-HSNG-SQ-100",
+                Name = "Screenkasten vierkant 100mm",
+                Category = "screen_housing",
+                Unit = "pcs",
+                IsCuttable = false,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000035"),
+                Sku = "SCR-HSNG-RD-100",
+                Name = "Screenkasten rond 100mm",
+                Category = "screen_housing",
+                Unit = "pcs",
+                IsCuttable = false,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000036"),
+                Sku = "SCR-HSNG-SQ-120",
+                Name = "Screenkasten vierkant 120mm",
+                Category = "screen_housing",
+                Unit = "pcs",
+                IsCuttable = false,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000037"),
+                Sku = "SCR-HSNG-RD-120",
+                Name = "Screenkasten rond 120mm",
+                Category = "screen_housing",
+                Unit = "pcs",
+                IsCuttable = false,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000038"),
+                Sku = "SCR-HSNG-CONCEALED",
+                Name = "Screenkasten inbouw",
+                Category = "screen_housing",
+                Unit = "pcs",
+                IsCuttable = false,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+
+            // ── Screen side channels & bottom bars ───────────────────────
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000039"),
+                Sku = "SCR-SIDECH-ZIP",
+                Name = "Zip-geleider zijkanaal",
+                Category = "screen_guide",
+                Unit = "pcs",
+                IsCuttable = true,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000040"),
+                Sku = "SCR-SIDECH-CABLE",
+                Name = "Kabel-geleider zijkanaal",
+                Category = "screen_guide",
+                Unit = "pcs",
+                IsCuttable = true,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000041"),
+                Sku = "SCR-BB-FLAT",
+                Name = "Onderregel plat",
+                Category = "screen_bottombar",
+                Unit = "pcs",
+                IsCuttable = true,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000042"),
+                Sku = "SCR-BB-ROUND",
+                Name = "Onderregel rond",
+                Category = "screen_bottombar",
+                Unit = "pcs",
+                IsCuttable = true,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000043"),
+                Sku = "SCR-BB-WEIGHTED",
+                Name = "Onderregel verzwaard",
+                Category = "screen_bottombar",
+                Unit = "pcs",
+                IsCuttable = true,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000044"),
+                Sku = "SCR-BB-ZIP",
+                Name = "Onderregel zip",
+                Category = "screen_bottombar",
+                Unit = "pcs",
+                IsCuttable = true,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+
+            // ── Screen mounting & hardware ───────────────────────────────
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000045"),
+                Sku = "SCR-BRACKET-FACE",
+                Name = "Screenbeugel opbouw",
+                Category = "screen_hardware",
+                Unit = "pcs",
+                IsCuttable = false,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000046"),
+                Sku = "SCR-BRACKET-TOP",
+                Name = "Screenbeugel plafond/bovenzijde",
+                Category = "screen_hardware",
+                Unit = "pcs",
+                IsCuttable = false,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000047"),
+                Sku = "SCR-BRACKET-CEILING",
+                Name = "Screenbeugel plafondmontage",
+                Category = "screen_hardware",
+                Unit = "pcs",
+                IsCuttable = false,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000048"),
+                Sku = "SCR-BRACKET-RECESS",
+                Name = "Screenbeugel inmetselen",
+                Category = "screen_hardware",
+                Unit = "pcs",
+                IsCuttable = false,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000049"),
+                Sku = "SCR-CHAIN-DRIVE",
+                Name = "Kettingbediening screendoek",
+                Category = "screen_drive",
+                Unit = "set",
+                IsCuttable = false,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000050"),
+                Sku = "SCR-SPRING-ASSIST",
+                Name = "Veerbediening screendoek",
+                Category = "screen_drive",
+                Unit = "set",
+                IsCuttable = false,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+
+            // ── Simu motor parts ─────────────────────────────────────────
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000051"),
+                Sku = "MOTOR-SIMU-T5-10",
+                Name = "Simu T5 Hz 10/17",
+                Category = "motor",
+                Unit = "pcs",
+                IsCuttable = false,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000052"),
+                Sku = "MOTOR-SIMU-T5-20",
+                Name = "Simu T5 Hz 20/17",
+                Category = "motor",
+                Unit = "pcs",
+                IsCuttable = false,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Part
+            {
+                Id = new Guid("C0000000-0000-0000-0000-000000000053"),
+                Sku = "MOTOR-SIMU-T6-25",
+                Name = "Simu T6 Hz 25/17",
+                Category = "motor",
+                Unit = "pcs",
+                IsCuttable = false,
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
             }
         };
 
@@ -406,6 +760,65 @@ public static class PartsCatalogSeeder
             Mapping(family, "hardware", """{"boxType":"BOX-BI-200","component":"endcap"}""", "ENDCAP-BI", 1, now),
             Mapping(family, "hardware", """{"boxType":"BOX-CC-180","component":"endcap"}""", "ENDCAP-BI", 1, now)
         };
+
+        // ── Screen SKU mappings ──────────────────────────────────────────────
+        const string scrFamily = "screen";
+
+        var screenMappings = new[]
+        {
+            // ── Fabrics ──────────────────────────────────────────────────
+            Mapping(scrFamily, "screen_fabric", """{"fabricType":"soltis_86"}""",       "SCR-FABRIC-SOLTIS86",   0, now),
+            Mapping(scrFamily, "screen_fabric", """{"fabricType":"soltis_92"}""",       "SCR-FABRIC-SOLTIS92",   0, now),
+            Mapping(scrFamily, "screen_fabric", """{"fabricType":"soltis_96"}""",       "SCR-FABRIC-SOLTIS96",   0, now),
+            Mapping(scrFamily, "screen_fabric", """{"fabricType":"serge_600"}""",       "SCR-FABRIC-SERGE600",   0, now),
+            Mapping(scrFamily, "screen_fabric", """{"fabricType":"sunworker_open"}""",  "SCR-FABRIC-SUNW-OPEN",  0, now),
+            Mapping(scrFamily, "screen_fabric", """{"fabricType":"sunworker_classic"}""","SCR-FABRIC-SUNW-CLASSIC",0, now),
+            Mapping(scrFamily, "screen_fabric", """{"fabricType":"copaco_300"}""",      "SCR-FABRIC-COPACO300",  0, now),
+            Mapping(scrFamily, "screen_fabric", """{"fabricType":"copaco_350"}""",      "SCR-FABRIC-COPACO350",  0, now),
+
+            // ── Housings ─────────────────────────────────────────────────
+            Mapping(scrFamily, "screen_housing", """{"housingType":"square_100"}""",  "SCR-HSNG-SQ-100",    0, now),
+            Mapping(scrFamily, "screen_housing", """{"housingType":"round_100"}""",   "SCR-HSNG-RD-100",    0, now),
+            Mapping(scrFamily, "screen_housing", """{"housingType":"square_120"}""",  "SCR-HSNG-SQ-120",    0, now),
+            Mapping(scrFamily, "screen_housing", """{"housingType":"round_120"}""",   "SCR-HSNG-RD-120",    0, now),
+            Mapping(scrFamily, "screen_housing", """{"housingType":"concealed"}""",   "SCR-HSNG-CONCEALED", 0, now),
+
+            // ── Side channels ────────────────────────────────────────────
+            Mapping(scrFamily, "screen_guide", """{"guidanceType":"zip"}""",          "SCR-SIDECH-ZIP",   0, now),
+            Mapping(scrFamily, "screen_guide", """{"guidanceType":"cable"}""",        "SCR-SIDECH-CABLE", 0, now),
+
+            // ── Bottom bars ──────────────────────────────────────────────
+            Mapping(scrFamily, "screen_bottombar", """{"bottomBar":"flat"}""",      "SCR-BB-FLAT",     0, now),
+            Mapping(scrFamily, "screen_bottombar", """{"bottomBar":"round"}""",     "SCR-BB-ROUND",    0, now),
+            Mapping(scrFamily, "screen_bottombar", """{"bottomBar":"weighted"}""",  "SCR-BB-WEIGHTED", 0, now),
+            Mapping(scrFamily, "screen_bottombar", """{"bottomBar":"zip"}""",       "SCR-BB-ZIP",      0, now),
+
+            // ── Mounting brackets ────────────────────────────────────────
+            Mapping(scrFamily, "screen_hardware", """{"mountType":"face"}""",    "SCR-BRACKET-FACE",    0, now),
+            Mapping(scrFamily, "screen_hardware", """{"mountType":"top"}""",     "SCR-BRACKET-TOP",     0, now),
+            Mapping(scrFamily, "screen_hardware", """{"mountType":"ceiling"}""", "SCR-BRACKET-CEILING", 0, now),
+            Mapping(scrFamily, "screen_hardware", """{"mountType":"recess"}""",  "SCR-BRACKET-RECESS",  0, now),
+
+            // ── Drive mechanisms ─────────────────────────────────────────
+            Mapping(scrFamily, "screen_drive", """{"driveType":"manual_chain"}""",  "SCR-CHAIN-DRIVE",   0, now),
+            Mapping(scrFamily, "screen_drive", """{"driveType":"spring_assist"}""", "SCR-SPRING-ASSIST", 0, now),
+
+            // ── Motors ───────────────────────────────────────────────────
+            Mapping(scrFamily, "motor", """{"motorType":"SOMFY-IO-15"}""",  "MOTOR-SOMFY-IO-15",  0, now),
+            Mapping(scrFamily, "motor", """{"motorType":"SOMFY-IO-25"}""",  "MOTOR-SOMFY-IO-25",  0, now),
+            Mapping(scrFamily, "motor", """{"motorType":"SOMFY-IO-40"}""",  "MOTOR-SOMFY-IO-40",  0, now),
+            Mapping(scrFamily, "motor", """{"motorType":"SOMFY-RTS-20"}""", "MOTOR-SOMFY-RTS-20", 0, now),
+            Mapping(scrFamily, "motor", """{"motorType":"BECKER-R12"}""",   "MOTOR-BECKER-R12",   0, now),
+            Mapping(scrFamily, "motor", """{"motorType":"SIMU-T5-10"}""",   "MOTOR-SIMU-T5-10",   0, now),
+            Mapping(scrFamily, "motor", """{"motorType":"SIMU-T5-20"}""",   "MOTOR-SIMU-T5-20",   0, now),
+            Mapping(scrFamily, "motor", """{"motorType":"SIMU-T6-25"}""",   "MOTOR-SIMU-T6-25",   0, now),
+
+            // ── Common hardware ──────────────────────────────────────────
+            Mapping(scrFamily, "hardware", """{"component":"screw"}""", "SCREW-6X60", 0, now),
+            Mapping(scrFamily, "hardware", """{"component":"plug"}""",  "PLUG-8MM",   0, now)
+        };
+
+        await dbSet.AddRangeAsync(screenMappings);
 
         await dbSet.AddRangeAsync(mappings);
         await context.SaveChangesAsync();

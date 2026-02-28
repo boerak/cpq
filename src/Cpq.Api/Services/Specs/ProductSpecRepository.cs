@@ -37,10 +37,9 @@ public class ProductSpecRepository : IProductSpecRepository
             return await LoadGlobalRefDataAsync(ct);
         });
 
-        var context = new Dictionary<string, object>
-        {
-            ["specs"] = specContext
-        };
+        // Merge product-specific specs into the top-level context
+        // (so rules access specs.fabric, specs.dimensions, etc. directly)
+        var context = new Dictionary<string, object>(specContext);
 
         if (globalData is not null)
         {

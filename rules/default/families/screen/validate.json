@@ -1,0 +1,47 @@
+{
+  "contentType": "application/vnd.gorules.decision",
+  "nodes": [
+    {
+      "id": "scr-val-input",
+      "name": "Input",
+      "type": "inputNode",
+      "position": {
+        "x": 100,
+        "y": 300
+      }
+    },
+    {
+      "id": "scr-val-fn",
+      "name": "Screen Validation",
+      "type": "functionNode",
+      "position": {
+        "x": 400,
+        "y": 300
+      },
+      "content": {
+        "source": "/**\n * Screen Validation — validates all user selections\n * @type {Handler}\n */\nexport const handler = async (input) => {\n  const { userSelections: sel, specs, productType } = input;\n  const errors = [];\n  const warnings = [];\n  const variant = productType?.variant || 'standard';\n  const variantSpec = specs?.variant?.constraints || {};\n  const area = (sel.width && sel.height) ? (sel.width * sel.height) / 1000000 : 0;\n  const dimSpec = specs?.dimensions?.screen;\n\n  // ── Dimension validation ────────────────────────────────────────────\n  if (sel.width && dimSpec) {\n    if (sel.width < dimSpec.minWidth) errors.push({ parameter: 'width', rule: 'min-width', message: `Minimale breedte is ${dimSpec.minWidth}mm` });\n    if (sel.width > dimSpec.maxWidth) errors.push({ parameter: 'width', rule: 'max-width', message: `Maximale breedte is ${dimSpec.maxWidth}mm` });\n  }\n  if (sel.height && dimSpec) {\n    if (sel.height < dimSpec.minHeight) errors.push({ parameter: 'height', rule: 'min-height', message: `Minimale hoogte is ${dimSpec.minHeight}mm` });\n    if (sel.height > dimSpec.maxHeight) errors.push({ parameter: 'height', rule: 'max-height', message: `Maximale hoogte is ${dimSpec.maxHeight}mm` });\n  }\n\n  // ── Fabric area check (rule 3) ──────────────────────────────────────\n  if (sel.fabricType && specs?.fabric?.[sel.fabricType] && area > 0) {\n    const fs = specs.fabric[sel.fabricType];\n    if (fs.maxArea && area > fs.maxArea) {\n      errors.push({ parameter: 'fabricType', rule: 'max-area', message: `${sel.fabricType} maximaal ${fs.maxArea}m² (huidig: ${area.toFixed(1)}m²)` });\n    }\n  }\n\n  // ── Fabric color check (rule 1) ─────────────────────────────────────\n  if (sel.fabricType && sel.fabricColor && specs?.fabric?.[sel.fabricType]) {\n    const allowed = specs.fabric[sel.fabricType].colors || [];\n    if (!allowed.includes(sel.fabricColor)) {\n      errors.push({ parameter: 'fabricColor', rule: 'fabric-color', message: `Kleur ${sel.fabricColor} niet beschikbaar voor ${sel.fabricType}` });\n    }\n  }\n\n  // ── Mesh openness check (rule 2) ────────────────────────────────────\n  if (sel.fabricType && sel.meshOpenness && specs?.fabric?.[sel.fabricType]) {\n    const allowed = specs.fabric[sel.fabricType].openness || [];\n    if (!allowed.includes(sel.meshOpenness)) {\n      errors.push({ parameter: 'meshOpenness', rule: 'mesh-openness', message: `Openheid ${sel.meshOpenness}% niet beschikbaar voor ${sel.fabricType}` });\n    }\n  }\n\n  // ── Housing size check (rule 4) ─────────────────────────────────────\n  if (sel.housingType && sel.width && specs?.housing?.size_constraints) {\n    const hSpec = specs.housing.size_constraints;\n    if (hSpec.small.includes(sel.housingType) && sel.width > hSpec.smallMaxWidth) {\n      errors.push({ parameter: 'housingType', rule: 'housing-width', message: `100mm kast niet beschikbaar boven ${hSpec.smallMaxWidth}mm breedte` });\n    }\n  }\n\n  // ── ZIP guidance check (rule 5) ─────────────────────────────────────\n  if (variant === 'zip' && sel.guidanceType && sel.guidanceType !== 'zip') {\n    errors.push({ parameter: 'guidanceType', rule: 'zip-guidance', message: 'ZIP Screen vereist zip geleiding' });\n  }\n\n  // ── Fix screen drive check (rule 6) ─────────────────────────────────\n  if (variant === 'fix' && sel.driveType && sel.driveType !== 'manual_chain') {\n    errors.push({ parameter: 'driveType', rule: 'fix-drive', message: 'Fix Screen alleen met kettingbediening' });\n  }\n\n  // ── Fix screen area check ───────────────────────────────────────────\n  if (variant === 'fix' && variantSpec.maxArea && area > variantSpec.maxArea) {\n    errors.push({ parameter: 'height', rule: 'fix-max-area', message: `Fix Screen maximaal ${variantSpec.maxArea}m² (huidig: ${area.toFixed(1)}m²)` });\n  }\n\n  // ── Free-hanging bottom bar check (rule 7) ──────────────────────────\n  if (sel.guidanceType === 'free_hanging' && sel.bottomBar && sel.bottomBar !== 'weighted') {\n    errors.push({ parameter: 'bottomBar', rule: 'free-hanging-bar', message: 'Vrij hangend scherm vereist verzwaarde onderregel' });\n  }\n\n  // ── Cable guidance housing check (rule 8) ───────────────────────────\n  if (sel.guidanceType === 'cable' && sel.housingType === 'concealed') {\n    errors.push({ parameter: 'housingType', rule: 'cable-housing', message: 'Kabelgeleiding niet compatibel met inbouwkast' });\n  }\n\n  // ── Motor brand vs motor type check (rule 9) ───────────────────────\n  if (sel.motorBrand && sel.motorType && specs?.motors) {\n    const motor = specs.motors.find(m => m.code === sel.motorType);\n    if (motor && motor.brand.toLowerCase() !== sel.motorBrand.toLowerCase()) {\n      errors.push({ parameter: 'motorType', rule: 'motor-brand', message: `Motor ${sel.motorType} is niet van merk ${sel.motorBrand}` });\n    }\n  }\n\n  // ── Motor control type check (rule 10) ──────────────────────────────\n  if (sel.motorType && sel.controlType && specs?.motors) {\n    const motor = specs.motors.find(m => m.code === sel.motorType);\n    if (motor && motor.controlTypes && !motor.controlTypes.includes(sel.controlType)) {\n      errors.push({ parameter: 'controlType', rule: 'motor-control', message: `Besturing ${sel.controlType} niet compatibel met motor ${sel.motorType}` });\n    }\n  }\n\n  // ── Motor torque check (rule 11) ────────────────────────────────────\n  if (sel.driveType === 'motor' && sel.motorType && area > 0 && specs?.motors && sel.fabricType && specs?.fabric?.[sel.fabricType]) {\n    const motor = specs.motors.find(m => m.code === sel.motorType);\n    const weightPerM2 = specs.fabric[sel.fabricType].weightPerM2;\n    const totalWeight = area * weightPerM2;\n    const safetyFactor = specs?.motor?.minTorque?.safetyFactor || 1.3;\n    const reqTorque = totalWeight * 0.05 * safetyFactor;\n    if (motor && motor.torqueNm < reqTorque) {\n      errors.push({ parameter: 'motorType', rule: 'motor-torque', message: `Motor koppel onvoldoende (${motor.torqueNm}Nm < ${reqTorque.toFixed(1)}Nm benodigd)` });\n    }\n  }\n\n  // ── Wind automation requires motor (rule 12) ───────────────────────\n  if (sel.windAutomation && sel.windAutomation !== 'none' && sel.driveType !== 'motor') {\n    errors.push({ parameter: 'windAutomation', rule: 'wind-motor', message: 'Windautomatisering vereist motoraandrijving' });\n  }\n\n  // ── Integration requires IO homecontrol (rule 13) ──────────────────\n  if (sel.integration && sel.integration !== 'none' && sel.controlType !== 'io_homecontrol') {\n    errors.push({ parameter: 'integration', rule: 'integration-control', message: `${sel.integration === 'tahoma' ? 'TaHoma' : 'Connexoon'} vereist IO Homecontrol besturing` });\n  }\n\n  // ── Concealed housing not with ceiling mount (rule 14) ─────────────\n  if (sel.housingType === 'concealed' && sel.mountType === 'ceiling') {\n    errors.push({ parameter: 'mountType', rule: 'concealed-ceiling', message: 'Plafondmontage niet mogelijk bij inbouwkast' });\n  }\n\n  // ── Spring assist area limit (rule 15) ──────────────────────────────\n  if (sel.driveType === 'spring_assist' && area > 4.0) {\n    errors.push({ parameter: 'driveType', rule: 'spring-area', message: `Veerassistentie niet beschikbaar boven 4m² (huidig: ${area.toFixed(1)}m²)` });\n  }\n\n  // ── ZIP requires motor (from variant spec) ─────────────────────────\n  if (variant === 'zip' && sel.driveType && sel.driveType !== 'motor') {\n    errors.push({ parameter: 'driveType', rule: 'zip-motor', message: 'ZIP Screen vereist motoraandrijving' });\n  }\n\n  return { valid: errors.length === 0, errors, warnings };\n};"
+      }
+    },
+    {
+      "id": "scr-val-output",
+      "name": "Output",
+      "type": "outputNode",
+      "position": {
+        "x": 700,
+        "y": 300
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "scr-val-edge-1",
+      "sourceId": "scr-val-input",
+      "targetId": "scr-val-fn"
+    },
+    {
+      "id": "scr-val-edge-2",
+      "sourceId": "scr-val-fn",
+      "targetId": "scr-val-output"
+    }
+  ]
+}

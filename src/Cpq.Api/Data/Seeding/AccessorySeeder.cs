@@ -99,6 +99,104 @@ public static class AccessorySeeder
                 IsActive = true,
                 CreatedAt = now,
                 UpdatedAt = now
+            },
+
+            // ── Screen accessories ───────────────────────────────────────
+            new Accessory
+            {
+                Id = new Guid("70000000-0000-0000-0000-000000000008"),
+                Code = "ACC-SCR-EOLIS-WF",
+                Name = "Eolis Wirefree windsensor",
+                Category = "wind_automation",
+                RequiresMotor = true,
+                CompatibleFamilies = new List<string> { "screen" },
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Accessory
+            {
+                Id = new Guid("70000000-0000-0000-0000-000000000009"),
+                Code = "ACC-SCR-EOLIS-RTS",
+                Name = "Eolis RTS windsensor",
+                Category = "wind_automation",
+                RequiresMotor = true,
+                CompatibleFamilies = new List<string> { "screen" },
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Accessory
+            {
+                Id = new Guid("70000000-0000-0000-0000-000000000010"),
+                Code = "ACC-SCR-SUNIS-WF",
+                Name = "Sunis Wirefree zonsensor",
+                Category = "wind_automation",
+                RequiresMotor = true,
+                CompatibleFamilies = new List<string> { "screen" },
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Accessory
+            {
+                Id = new Guid("70000000-0000-0000-0000-000000000011"),
+                Code = "ACC-SCR-SITUO-1CH",
+                Name = "Situo 1 IO Pure afstandsbediening",
+                Category = "remote_control",
+                RequiresMotor = true,
+                CompatibleFamilies = new List<string> { "screen" },
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Accessory
+            {
+                Id = new Guid("70000000-0000-0000-0000-000000000012"),
+                Code = "ACC-SCR-SITUO-5CH",
+                Name = "Situo 5 IO Pure afstandsbediening",
+                Category = "remote_control",
+                RequiresMotor = true,
+                CompatibleFamilies = new List<string> { "screen" },
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Accessory
+            {
+                Id = new Guid("70000000-0000-0000-0000-000000000013"),
+                Code = "ACC-SCR-SMOOVE",
+                Name = "Smoove Origin IO wandzender",
+                Category = "remote_control",
+                RequiresMotor = true,
+                CompatibleFamilies = new List<string> { "screen" },
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Accessory
+            {
+                Id = new Guid("70000000-0000-0000-0000-000000000014"),
+                Code = "ACC-SCR-TAHOMA",
+                Name = "TaHoma Switch domotica",
+                Category = "integration",
+                RequiresMotor = true,
+                CompatibleFamilies = new List<string> { "screen" },
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Accessory
+            {
+                Id = new Guid("70000000-0000-0000-0000-000000000015"),
+                Code = "ACC-SCR-CONNEXOON",
+                Name = "Connexoon domotica",
+                Category = "integration",
+                RequiresMotor = true,
+                CompatibleFamilies = new List<string> { "screen" },
+                IsActive = true,
+                CreatedAt = now,
+                UpdatedAt = now
             }
         };
 

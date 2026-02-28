@@ -328,22 +328,31 @@ export class BomViewerComponent implements OnInit {
 
     this.bomService.getBom(configId).subscribe({
       next: (bom) => {
+        if (bom.lines.length > 0) {
+          this.bom.set(bom);
+          this.isLoading.set(false);
+        } else {
+          // No BOM lines yet — generate on demand
+          this.generateBom(configId);
+        }
+      },
+      error: () => {
+        // GET failed — try to generate
+        this.generateBom(configId);
+      }
+    });
+  }
+
+  private generateBom(configId: string): void {
+    this.bomService.generateBom(configId).subscribe({
+      next: (bom) => {
         this.bom.set(bom);
         this.isLoading.set(false);
       },
-      error: (err) => {
-        // If GET fails (no BOM yet), try to generate it
-        this.bomService.generateBom(configId).subscribe({
-          next: (bom) => {
-            this.bom.set(bom);
-            this.isLoading.set(false);
-          },
-          error: (genErr) => {
-            this.error.set('Fout bij laden van stuklijst. Controleer of de configuratie afgerond is.');
-            this.isLoading.set(false);
-            console.error('Error generating BOM:', genErr);
-          }
-        });
+      error: (genErr) => {
+        this.error.set('Fout bij laden van stuklijst. Controleer of de configuratie afgerond is.');
+        this.isLoading.set(false);
+        console.error('Error generating BOM:', genErr);
       }
     });
   }

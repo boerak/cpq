@@ -1,13 +1,4 @@
 services:
-  gorules-editor:
-    build:
-      context: ./editor
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./rules:/app/rules
-
   gorules-agent:
     image: gorules/agent:latest
     ports:
