@@ -1,7 +1,15 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { ApiService } from './api.service';
 import { Configuration } from '../models/configuration.model';
+
+interface PagedResponse<T> {
+  items: T[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
 
 export interface CreateConfigurationRequest {
   productTypeCode: string;
@@ -42,6 +50,8 @@ export class ConfigurationService extends ApiService {
   }
 
   listConfigurations(): Observable<Configuration[]> {
-    return this.http.get<Configuration[]>(`${this.baseUrl}/configurations`);
+    return this.http.get<PagedResponse<Configuration>>(`${this.baseUrl}/configurations`).pipe(
+      map(response => response.items)
+    );
   }
 }
