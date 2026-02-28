@@ -1,0 +1,54 @@
+<div class="product-selector">
+  <div class="page-header">
+    <h1>Producten selecteren</h1>
+    <p class="page-subtitle">Kies een producttype om te configureren</p>
+  </div>
+
+  <app-loading-spinner
+    [loading]="isLoadingFamilies()"
+    message="Productfamilies laden...">
+  </app-loading-spinner>
+
+  <div *ngIf="!isLoadingFamilies() && error()">
+    <p class="error-message">{{ error() }}</p>
+  </div>
+
+  <div *ngIf="!isLoadingFamilies() && !error() && families().length > 0">
+    <mat-tab-group
+      [selectedIndex]="selectedFamilyIndex()"
+      (selectedIndexChange)="onTabChange($event)"
+      animationDuration="200ms">
+
+      <mat-tab *ngFor="let family of families()" [label]="family.name">
+        <div class="tab-content">
+          <app-loading-spinner
+            [loading]="isLoadingProducts()"
+            message="Producten laden...">
+          </app-loading-spinner>
+
+          <div *ngIf="!isLoadingProducts()" class="products-grid">
+            <app-product-card
+              *ngFor="let product of selectedProducts()"
+              [product]="product"
+              (configure)="onConfigureProduct($event)">
+            </app-product-card>
+
+            <div *ngIf="selectedProducts().length === 0" class="no-products">
+              <p>Geen producten beschikbaar voor deze familie.</p>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+  <div *ngIf="!isLoadingFamilies() && families().length === 0 && !error()" class="no-families">
+    <p>Geen actieve productfamilies gevonden.</p>
+  </div>
+
+  <!-- Loading overlay when creating configuration -->
+  <div *ngIf="isCreatingConfig()" class="creating-overlay">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Configuratie aanmaken...</p>
+  </div>
+</div>

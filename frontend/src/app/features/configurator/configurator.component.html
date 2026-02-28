@@ -1,0 +1,129 @@
+<div class="configurator">
+
+  <!-- Loading state -->
+  <app-loading-spinner
+    [loading]="store.isLoading()"
+    message="Configuratie laden...">
+  </app-loading-spinner>
+
+  <!-- Error state -->
+  <div *ngIf="!store.isLoading() && store.error()" class="error-container">
+    <p class="error-message">{{ store.error() }}</p>
+    <button mat-raised-button (click)="navigateBack()">
+      <mat-icon>arrow_back</mat-icon>
+      Terug naar producten
+    </button>
+  </div>
+
+  <!-- Main configurator content -->
+  <div *ngIf="!store.isLoading() && !store.error() && store.configuration() as config" class="configurator-content">
+
+    <!-- Header -->
+    <div class="configurator-header">
+      <button mat-icon-button (click)="navigateBack()" class="back-btn" matTooltip="Terug naar producten">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="header-info">
+        <h1 class="product-name">{{ config.productType.name }}</h1>
+        <p class="product-variant">{{ config.productType.variant }} &mdash; {{ config.productType.family.name }}</p>
+      </div>
+      <span class="spacer"></span>
+      <app-status-badge [status]="config.status"></app-status-badge>
+    </div>
+
+    <!-- Progress bar -->
+    <mat-progress-bar
+      mode="determinate"
+      [value]="progressValue"
+      class="progress-bar">
+    </mat-progress-bar>
+
+    <!-- Step indicator -->
+    <div class="step-indicator" *ngIf="store.steps().length > 0">
+      <span class="step-counter">
+        Stap {{ store.currentStepIndex() + 1 }} van {{ store.steps().length }}
+      </span>
+    </div>
+
+    <!-- Saving indicator -->
+    <mat-progress-bar
+      *ngIf="store.isSaving()"
+      mode="indeterminate"
+      color="accent"
+      class="saving-bar">
+    </mat-progress-bar>
+
+    <!-- Step tabs -->
+    <mat-tab-group
+      *ngIf="store.steps().length > 0"
+      [selectedIndex]="store.currentStepIndex()"
+      (selectedIndexChange)="onTabChange($event)"
+      animationDuration="0ms"
+      class="step-tabs">
+
+      <mat-tab
+        *ngFor="let step of store.steps(); let i = index"
+        [label]="step.stepName">
+      </mat-tab>
+
+    </mat-tab-group>
+
+    <!-- Current step content -->
+    <mat-card class="step-card" *ngIf="store.currentStep() as step">
+      <mat-card-content>
+        <app-wizard-step
+          [step]="step"
+          [configValues]="config.config"
+          [errors]="store.allErrors()"
+          [availableOptionsMap]="getAvailableOptionsMap()"
+          (fieldChange)="onFieldChange($event)">
+        </app-wizard-step>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Validation panel -->
+    <app-validation-panel
+      [validation]="config.validation"
+      [isCollapsible]="true">
+    </app-validation-panel>
+
+    <!-- Navigation buttons -->
+    <div class="nav-buttons">
+      <button
+        mat-stroked-button
+        [disabled]="!store.canGoPrev()"
+        (click)="store.prevStep()"
+        class="nav-btn">
+        <mat-icon>chevron_left</mat-icon>
+        Vorige
+      </button>
+
+      <span class="nav-spacer"></span>
+
+      <button
+        *ngIf="!store.canFinalize()"
+        mat-raised-button
+        color="primary"
+        [disabled]="!store.canGoNext()"
+        (click)="store.nextStep()"
+        class="nav-btn">
+        Volgende
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+
+      <button
+        *ngIf="store.canFinalize()"
+        mat-raised-button
+        color="accent"
+        [disabled]="store.isSaving()"
+        (click)="store.finalize()"
+        class="nav-btn finalize-btn"
+        matTooltip="Configuratie afronden en BOM genereren">
+        <mat-icon>check_circle</mat-icon>
+        Afronden
+      </button>
+    </div>
+
+  </div>
+
+</div>

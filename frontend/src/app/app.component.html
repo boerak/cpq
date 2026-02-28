@@ -1,0 +1,21 @@
+<mat-toolbar color="primary" class="app-toolbar">
+  <span class="toolbar-title">
+    <mat-icon>settings</mat-icon>
+    CPQ Configurator
+  </span>
+  <span class="spacer"></span>
+  <nav class="toolbar-nav">
+    <a mat-button routerLink="/products" routerLinkActive="active-link">
+      <mat-icon>category</mat-icon>
+      Producten
+    </a>
+    <a mat-button routerLink="/configurations" routerLinkActive="active-link">
+      <mat-icon>list</mat-icon>
+      Configuraties
+    </a>
+  </nav>
+</mat-toolbar>
+
+<main class="app-content">
+  <router-outlet></router-outlet>
+</main>
