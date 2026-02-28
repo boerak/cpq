@@ -86,13 +86,11 @@ export class ConfiguratorStore {
     const config = this.configuration();
     if (!config) return;
 
-    const updatedConfig = { ...config.config, [code]: value };
-
     this.isSaving.set(true);
 
     this.configService.updateConfiguration(config.id, {
-      config: updatedConfig,
-      version: config.version
+      selections: { [code]: value },
+      expectedVersion: config.version
     }).subscribe({
       next: (updatedConfiguration) => {
         // Handle resetFields notification

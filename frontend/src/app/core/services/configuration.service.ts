@@ -8,8 +8,8 @@ export interface CreateConfigurationRequest {
 }
 
 export interface UpdateConfigurationRequest {
-  config: Record<string, unknown>;
-  version: number;
+  selections: Record<string, unknown>;
+  expectedVersion: number;
 }
 
 @Injectable({
