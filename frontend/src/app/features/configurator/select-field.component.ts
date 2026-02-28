@@ -116,7 +116,7 @@ export class SelectFieldComponent implements OnInit, OnChanges {
     } else {
       // Fall back to static options
       this.displayOptions = staticOptions
-        .filter(opt => opt.isActive)
+        .filter(opt => opt.available)
         .map(opt => ({
           code: opt.code,
           displayName: opt.displayName,

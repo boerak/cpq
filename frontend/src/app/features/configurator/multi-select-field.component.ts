@@ -139,7 +139,7 @@ export class MultiSelectFieldComponent implements OnInit, OnChanges {
       });
     } else {
       this.displayOptions = staticOptions
-        .filter(opt => opt.isActive)
+        .filter(opt => opt.available)
         .map(opt => ({
           code: opt.code,
           displayName: opt.displayName,

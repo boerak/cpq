@@ -1,7 +1,7 @@
 export interface Option {
   code: string;
   displayName: string;
-  isActive: boolean;
+  available: boolean;
 }
 
 export interface Parameter {

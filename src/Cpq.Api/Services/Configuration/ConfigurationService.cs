@@ -557,7 +557,8 @@ public class ConfigurationService : IConfigurationService
                         {
                             Code = opt.TryGetProperty("code", out var c) ? c.GetString() ?? string.Empty : string.Empty,
                             DisplayName = opt.TryGetProperty("displayName", out var dn) ? dn.GetString() ?? string.Empty : string.Empty,
-                            IsActive = !opt.TryGetProperty("isActive", out var ia) || ia.GetBoolean()
+                            Available = !opt.TryGetProperty("available", out var av) || av.GetBoolean(),
+                            Reason = opt.TryGetProperty("reason", out var r) && r.ValueKind == JsonValueKind.String ? r.GetString() : null
                         });
                     }
                     options[prop.Name] = optList;

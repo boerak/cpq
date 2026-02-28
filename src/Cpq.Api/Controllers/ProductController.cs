@@ -106,7 +106,7 @@ public class ProductController : ControllerBase
                         {
                             Code = o.Code,
                             DisplayName = o.DisplayName,
-                            IsActive = o.IsActive
+                            Available = o.IsActive
                         }).ToList()
                         : new List<OptionResponse>()
                 }).ToList()

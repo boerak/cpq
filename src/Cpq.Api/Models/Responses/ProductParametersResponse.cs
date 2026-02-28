@@ -43,5 +43,7 @@ public class OptionResponse
 
     public string DisplayName { get; set; } = string.Empty;
 
-    public bool IsActive { get; set; }
+    public bool Available { get; set; }
+
+    public string? Reason { get; set; }
 }
